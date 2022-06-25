@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using NetCoreWebAPIWithMongoDBHelloworld.Models;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace NetCoreWebAPIWithMongoDBHelloworld.Controllers
@@ -58,6 +60,23 @@ namespace NetCoreWebAPIWithMongoDBHelloworld.Controllers
             var filter = Builders<Employee>.Filter.Eq("EmployeeId", id);
             dbClient.GetDatabase("NetCoreAPIHelloworld").GetCollection<Employee>("Employee").DeleteOne(filter);
             return new JsonResult("Deleted Successfully");
+        }
+
+        [Route("SaveFile")]
+        [HttpPost]
+        public JsonResult SaveFile()
+        {
+            try{
+                var httpRequest = Request.Form;
+                var postedFile = httpRequest.Files[0];
+                string filename = postedFile.FileName;
+                var physicalPath = _env.ContentRootPath + "/Photos/" + filename;
+                using (var stream = new FileStream(physicalPath, FileMode.Create)){ postedFile.CopyTo(stream); }
+                return new JsonResult(filename);
+            }
+            catch (Exception){
+                return new JsonResult("anonymous.png");
+            }
         }
     }
 }

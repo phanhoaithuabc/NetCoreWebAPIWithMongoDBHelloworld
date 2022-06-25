@@ -9,5 +9,9 @@
     <PackageReference Include="MongoDB.Driver" Version="2.16.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Photos\" />
+  </ItemGroup>
+
 
 </Project>
